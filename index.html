@@ -47,12 +47,30 @@
 
     .games {
       text-align: right;
-      color: #888;
+      font-weight: 500;
     }
 
+    /* Top 10 players */
     .top10 {
       color: gold;
       font-weight: 500;
+    }
+
+    /* Game activity colors */
+    .games.red {
+      color: #ff4d4d;
+    }
+
+    .games.orange {
+      color: #ff9f1a;
+    }
+
+    .games.yellow {
+      color: #ffd84d;
+    }
+
+    .games.green {
+      color: #4dff88;
     }
   </style>
 </head>
@@ -61,12 +79,12 @@
 
   <h1>MB Classical Chess Leaderboard</h1>
 
-  <!-- Header row -->
+  <!-- Header -->
   <div class="header">
     <div>#</div>
     <div>Name</div>
     <div style="text-align:right;">Rating</div>
-    <div style="text-align:right;">Games (12mo)</div>
+    <div style="text-align:right;">Games (1y)</div>
   </div>
 
   <script>
@@ -76,21 +94,32 @@
         return res.json();
       })
       .then(players => {
+
         players.sort((a, b) => b.rating - a.rating);
 
         players.forEach((p, i) => {
           const div = document.createElement("div");
           div.className = "player";
 
+          // Top 10 highlight
           if (i < 10) {
             div.classList.add("top10");
           }
+
+          const games = p.games ?? 0;
+
+          // Determine color class for games
+          const gamesClass =
+            games < 10 ? "red" :
+            games < 20 ? "orange" :
+            games < 40 ? "yellow" :
+            "green";
 
           div.innerHTML = `
             <div class="rank">${i + 1}</div>
             <div>${p.name}</div>
             <div class="rating">${p.rating}</div>
-            <div class="games">${p.games ?? "-"}</div>
+            <div class="games ${gamesClass}">${games}</div>
           `;
 
           document.body.appendChild(div);
