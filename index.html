@@ -21,16 +21,28 @@
     .player {
       font-size: 20px;
       margin: 6px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .left {
+      display: flex;
+      gap: 10px;
     }
 
     .rank {
       color: #888;
-      margin-right: 10px;
+      width: 30px;
     }
 
     .rating {
-      float: right;
       color: #aaa;
+    }
+
+    /* Top 10 highlight */
+    .top10 {
+      color: gold;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -40,29 +52,39 @@
   <h1>MB Classical Chess Leaderboard</h1>
 
   <script>
-fetch("players.json")
-  .then(res => {
-    if (!res.ok) throw new Error("players.json not found");
-    return res.json();
-  })
-  .then(players => {
-    players.sort((a, b) => b.rating - a.rating);
+    fetch("players.json")
+      .then(res => {
+        if (!res.ok) throw new Error("players.json not found");
+        return res.json();
+      })
+      .then(players => {
+        players.sort((a, b) => b.rating - a.rating);
 
-    players.forEach((p, i) => {
-      const div = document.createElement("div");
-      div.className = "player";
-      div.innerHTML = `
-        <span class="rank">${i+1}.</span> ${p.name}
-        <span class="rating">${p.rating}</span>
-      `;
-      document.body.appendChild(div);
-    });
-  })
-  .catch(err => {
-    document.body.innerHTML = "Error loading leaderboard.";
-    console.error(err);
-  });
-</script>
+        players.forEach((p, i) => {
+          const div = document.createElement("div");
+          div.className = "player";
+
+          // Apply gold style to top 10
+          if (i < 10) {
+            div.classList.add("top10");
+          }
+
+          div.innerHTML = `
+            <div class="left">
+              <span class="rank">${i + 1}.</span>
+              <span>${p.name}</span>
+            </div>
+            <span class="rating">${p.rating}</span>
+          `;
+
+          document.body.appendChild(div);
+        });
+      })
+      .catch(err => {
+        document.body.innerHTML = "Error loading leaderboard.";
+        console.error(err);
+      });
+  </script>
 
 </body>
 </html>
