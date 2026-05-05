@@ -141,7 +141,7 @@
 
         if (filter === "active") return games > 20;
         if (filter === "semi") return games > 10;
-        return games > 0;
+        return games > -1;
       });
 
       players.sort((a, b) => b.rating - a.rating);
