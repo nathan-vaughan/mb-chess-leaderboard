@@ -1,133 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Manitoba Chess Leaderboard</title>
-
+  <meta charset="UTF-8">
+  <title>Chess Leaderboard</title>
   <style>
     body {
-      background-color: black;
-      color: white;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial;
-      max-width: 700px;
-      margin: 60px auto;
-      line-height: 1.8;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 20px;
     }
 
     h1 {
-      font-weight: 500;
-      margin-bottom: 20px;
+      text-align: center;
     }
 
-    .header, .player {
-      display: grid;
-      grid-template-columns: 50px 1fr 100px 120px;
-      align-items: center;
-      padding: 6px 0;
+    .controls {
+      margin-bottom: 15px;
+      text-align: center;
     }
 
-    .header {
-      border-bottom: 1px solid #444;
-      margin-bottom: 10px;
-      color: #aaa;
+    select {
+      padding: 5px;
       font-size: 14px;
     }
 
-    .player {
-      font-size: 18px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #1e1e1e;
     }
 
-    .rank {
-      color: #888;
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #333;
     }
 
-    .rating {
-      text-align: right;
-      color: #aaa;
+    th {
+      background-color: #2c2c2c;
     }
 
-    .games {
-      text-align: right;
-      font-weight: 500;
+    tr:hover {
+      background-color: #2a2a2a;
     }
 
-    /* Top 10 players */
-    .top10 {
-      color: gold;
-      font-weight: 500;
-    }
-
-    /* Game activity colors */
-    .games.red {
-      color: #ff4d4d;
-    }
-
-    .games.orange {
-      color: #ff9f1a;
-    }
-
-    .games.yellow {
-      color: #ffd84d;
-    }
-
-    .games.green {
-      color: #00ad04;
-    }
+    /* Game count colors */
+    .low { color: #ff4d4d; }      /* <10 */
+    .medium { color: #ffa500; }   /* 10–20 */
+    .high { color: #ffff66; }     /* 20–40 */
+    .very-high { color: #66ff66; }/* 40+ */
   </style>
 </head>
-
 <body>
 
-  <h1>MB Classical Chess Leaderboard</h1>
+  <h1>Leaderboard</h1>
 
-  <!-- Header -->
-  <div class="header">
-    <div>#</div>
-    <div>Name</div>
-    <div style="text-align:right;">Rating</div>
-    <div style="text-align:right;">Games (1y)</div>
+  <div class="controls">
+    <label for="activityFilter">Filter players: </label>
+    <select id="activityFilter">
+      <option value="all">All Players (> 0 games)</option>
+      <option value="semi">Semi-active (> 10 games)</option>
+      <option value="active">Active (> 20 games)</option>
+    </select>
   </div>
 
+  <table id="leaderboard">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Rating</th>
+        <th>Games</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled by JS -->
+    </tbody>
+  </table>
+
   <script>
-    fetch("players.json")
-      .then(res => {
-        if (!res.ok) throw new Error("players.json not found");
-        return res.json();
-      })
-      .then(players => {
+    let allPlayers = [];
 
-        players.sort((a, b) => b.rating - a.rating);
-
-        players.forEach((p, i) => {
-          const div = document.createElement("div");
-          div.className = "player";
-
-          // Top 10 highlight
-          if (i < 10) {
-            div.classList.add("top10");
-          }
-
-          const games = p.games ?? 0;
-
-          // Determine color class for games
-          const gamesClass =
-            games < 10 ? "red" :
-            games < 20 ? "yellow" :
-            "green";
-
-          div.innerHTML = `
-            <div class="rank">${i + 1}</div>
-            <div>${p.name}</div>
-            <div class="rating">${p.rating}</div>
-            <div class="games ${gamesClass}">${games}</div>
-          `;
-
-          document.body.appendChild(div);
-        });
-      })
-      .catch(err => {
-        document.body.innerHTML = "Error loading leaderboard.";
-        console.error(err);
+    fetch('players.json')
+      .then(response => response.json())
+      .then(data => {
+        allPlayers = data;
+        renderPlayers();
       });
+
+    document.getElementById("activityFilter")
+      .addEventListener("change", renderPlayers);
+
+    function getGamesClass(games) {
+      if (games < 10) return "low";
+      if (games < 20) return "medium";
+      if (games < 40) return "high";
+      return "very-high";
+    }
+
+    function renderPlayers() {
+      const filter = document.getElementById("activityFilter").value;
+      const tbody = document.querySelector("#leaderboard tbody");
+      tbody.innerHTML = "";
+
+      let filtered = allPlayers.filter(player => {
+        const games = player.games || 0;
+
+        if (filter === "active") return games > 20;
+        if (filter === "semi") return games > 10;
+        return games > 0;
+      });
+
+      // Sort by rating (highest first)
+      filtered.sort((a, b) => b.rating - a.rating);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">No players match this filter</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((player, index) => {
+        const games = player.games || 0;
+        const gamesClass = getGamesClass(games);
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${player.name}</td>
+          <td>${player.rating}</td>
+          <td class="${gamesClass}">${games}</td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
   </script>
 
 </body>
