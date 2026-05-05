@@ -67,6 +67,11 @@
       font-weight: 500;
     }
 
+    /* Inactive players (0 games) */
+    .inactive {
+      color: #7d7e7d;
+    }
+
     /* Game activity colors */
     .games.red {
       color: #ff4d4d;
@@ -94,9 +99,10 @@
   <div class="controls">
     <label for="activityFilter">Filter: </label>
     <select id="activityFilter">
-      <option value="all">All (> 0 games)</option>
-      <option value="semi">Semi-active (> 10)</option>
       <option value="active">Active (> 20)</option>
+      <option value="semi">Semi-active (> 10)</option>
+      <option value="casual">Casual (> 0)</option>
+      <option value="inactive">Inactive (0)</option>
     </select>
   </div>
 
@@ -141,7 +147,10 @@
 
         if (filter === "active") return games > 20;
         if (filter === "semi") return games > 10;
-        return games > -1;
+        if (filter === "casual") return games > 0;
+        if (filter === "inactive") return games === 0;
+
+        return true;
       });
 
       players.sort((a, b) => b.rating - a.rating);
@@ -150,14 +159,21 @@
         const div = document.createElement("div");
         div.className = "player";
 
-        if (i < 10) {
+        const games = p.games ?? 0;
+
+        // Grey out inactive players
+        if (games === 0) {
+          div.classList.add("inactive");
+        }
+
+        // Top 10 highlight (only if not inactive)
+        if (i < 10 && games > 0) {
           div.classList.add("top10");
         }
 
-        const games = p.games ?? 0;
-
         const gamesClass =
-          games < 10 ? "red" :
+          games === 0 ? "" :
+          games < 10 ? "orange" :
           games < 20 ? "yellow" :
           "green";
 
