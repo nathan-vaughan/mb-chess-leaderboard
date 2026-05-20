@@ -31,7 +31,7 @@
 
     .header, .player {
       display: grid;
-      grid-template-columns: 50px 1fr 100px 120px;
+      grid-template-columns: 50px 1fr 160px 120px;
       align-items: center;
       padding: 6px 0;
     }
@@ -54,11 +54,33 @@
     .rating {
       text-align: right;
       color: #aaa;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
     }
 
     .games {
       text-align: right;
       font-weight: 500;
+    }
+
+    /* Rating change indicators */
+    .rating-up {
+      color: #00c853;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .rating-down {
+      color: #ff5252;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .rating-same {
+      color: #777;
+      font-size: 14px;
     }
 
     /* Top 10 players */
@@ -99,7 +121,7 @@
   <div class="controls">
     <label for="activityFilter">Filter: </label>
     <select id="activityFilter">
-      <option value="active">Active Only(> 20)</option>
+      <option value="active">Active Only (> 20)</option>
       <option value="semi">Semi-active (> 10)</option>
       <option value="casual">Casual (> 0)</option>
       <option value="inactive">All (0)</option>
@@ -177,10 +199,35 @@
           games < 20 ? "yellow" :
           "green";
 
+        // Rating difference calculation
+        let ratingChangeHTML = "";
+
+        if (p.previousRating !== undefined) {
+          const diff = p.rating - p.previousRating;
+
+          if (diff > 0) {
+            ratingChangeHTML =
+              `<span class="rating-up">▲ +${diff}</span>`;
+          }
+          else if (diff < 0) {
+            ratingChangeHTML =
+              `<span class="rating-down">▼ ${Math.abs(diff)}</span>`;
+          }
+          else {
+            ratingChangeHTML =
+              `<span class="rating-same">— 0</span>`;
+          }
+        }
+
         div.innerHTML = `
           <div class="rank">${i + 1}</div>
           <div>${p.name}</div>
-          <div class="rating">${p.rating}</div>
+
+          <div class="rating">
+            <span>${p.rating}</span>
+            ${ratingChangeHTML}
+          </div>
+
           <div class="games ${gamesClass}">${games}</div>
         `;
 
@@ -188,7 +235,8 @@
       });
 
       if (players.length === 0) {
-        container.innerHTML = "<div style='color:#888;'>No players match filter</div>";
+        container.innerHTML =
+          "<div style='color:#888;'>No players match filter</div>";
       }
     }
   </script>
