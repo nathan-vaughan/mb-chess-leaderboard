@@ -65,6 +65,10 @@
       font-weight: 500;
     }
 
+    .inactive-games {
+      color: #7d7e7d;
+    }
+
     /* Rating change indicators */
     .rating-up {
       color: #00c853;
@@ -183,10 +187,6 @@
 
         const games = p.games ?? 0;
 
-        // Grey out inactive players
-        if (games === 0) {
-          div.classList.add("inactive");
-        }
 
         // Top 10 highlight (only if not inactive)
         if (i < 10 && games > 0) {
@@ -194,7 +194,7 @@
         }
 
         const gamesClass =
-          games === 0 ? "" :
+          games === 0 ? "inactive-games" :
           games < 10 ? "orange" :
           games < 20 ? "yellow" :
           "green";
@@ -224,8 +224,8 @@
           <div>${p.name}</div>
 
           <div class="rating">
-            <span>${p.rating}</span>
             ${ratingChangeHTML}
+            <span>${p.rating}</span>
           </div>
 
           <div class="games ${gamesClass}">${games}</div>
