@@ -4,7 +4,7 @@
   {"name":"Baragar, Fletcher","city":"Winnipeg","rating":2261, "games": 9 },
   {"name":"Swift, Ryne","city":"Winnipeg","rating":2236, "games": 5 },
   {"name":"Wolchock, Theo","city":"Winnipeg","rating":2230, "previousRating":2235, "games": 0 },
-  {"name":"Anderson, Collin","city":"Winnipeg","rating":2200, "games": 24 },
+  {"name":"Anderson, Collin","city":"Winnipeg","rating":2200, "previousRating":2200, "games": 24 },
   {"name":"Gres, Yakiv","city":"Winnipeg","rating":2198, "games": 67 },
   {"name":"Lipnowski, Samuel","city":"Winnipeg","rating":2193, "previousRating":2189, "games": 0 },
   {"name":"Baron, Gustav L","city":"Winnipeg","rating":2182, "games": 17 },
