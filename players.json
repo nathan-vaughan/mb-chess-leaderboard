@@ -21,7 +21,7 @@
   {"name":"Prince, Colin","city":"Winnipeg","rating":2007, "games": 2 },
   {"name":"Stordeur, Jackson","city":"Winnipeg","rating":2005},
   {"name":"Orcullo, Fernando","city":"Winnipeg","rating":2004, "games": 18 },
-  {"name":"Vaughan, Nathan","city":"Winnipeg","rating":1996, "games": 29 },
+  {"name":"Vaughan, Nathan","city":"Winnipeg","rating":2151, "previousRating":1996 "games": 34 },
   {"name":"Nagelberg, Alan","city":"Winnipeg","rating":1993},
   {"name":"Hamm, Gabriel","city":"Altona","rating":1988},
   {"name":"de Groot, Steven","city":"Winnipeg","rating":1969},
