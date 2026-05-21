@@ -22,11 +22,30 @@
       margin-bottom: 15px;
     }
 
+    label {
+      color: #aaa;
+      margin-right: 8px;
+    }
+
     select {
       background: #111;
       color: white;
       border: 1px solid #444;
-      padding: 5px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    select:hover {
+      border-color: #666;
+      background: #161616;
+    }
+
+    select:focus {
+      border-color: #888;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
     }
 
     .header, .player {
@@ -69,7 +88,6 @@
       color: #7d7e7d;
     }
 
-    /* Rating change indicators */
     .rating-up {
       color: #00c853;
       font-size: 14px;
@@ -87,33 +105,19 @@
       font-size: 14px;
     }
 
-    /* Top 10 players */
     .top10 {
       color: gold;
       font-weight: 500;
     }
 
-    /* Inactive players (0 games) */
     .inactive {
       color: #7d7e7d;
     }
 
-    /* Game activity colors */
-    .games.red {
-      color: #ff4d4d;
-    }
-
-    .games.orange {
-      color: #ff9f1a;
-    }
-
-    .games.yellow {
-      color: #ffd84d;
-    }
-
-    .games.green {
-      color: #00ad04;
-    }
+    .games.red { color: #ff4d4d; }
+    .games.orange { color: #ff9f1a; }
+    .games.yellow { color: #ffd84d; }
+    .games.green { color: #00ad04; }
   </style>
 </head>
 
@@ -121,18 +125,16 @@
 
   <h1>MB Classical Chess Leaderboard</h1>
 
-  <!-- Filter -->
   <div class="controls">
-    <label for="activityFilter">Filter: </label>
+    <label for="activityFilter">Filter:</label>
     <select id="activityFilter">
       <option value="active">Active Only (> 20)</option>
       <option value="semi">Semi-active (> 10)</option>
-      <option value="casual">Casual (> 0)</option>
+      <option value="casual" selected>Casual (> 0)</option>
       <option value="inactive">All (0)</option>
     </select>
   </div>
 
-  <!-- Header -->
   <div class="header">
     <div>#</div>
     <div>Name</div>
@@ -187,8 +189,6 @@
 
         const games = p.games ?? 0;
 
-
-        // Top 10 highlight (only if not inactive)
         if (i < 10 && games > 0) {
           div.classList.add("top10");
         }
@@ -199,22 +199,15 @@
           games < 20 ? "yellow" :
           "green";
 
-        // Rating difference calculation
         let ratingChangeHTML = "";
 
         if (p.previousRating !== undefined) {
           const diff = p.rating - p.previousRating;
 
           if (diff > 0) {
-            ratingChangeHTML =
-              `<span class="rating-up">▲ +${diff}</span>`;
-          }
-          else if (diff < 0) {
-            ratingChangeHTML =
-              `<span class="rating-down">▼ -${Math.abs(diff)}</span>`;
-          }
-          else {
- 
+            ratingChangeHTML = `<span class=\"rating-up\">▲ +${diff}</span>`;
+          } else if (diff < 0) {
+            ratingChangeHTML = `<span class=\"rating-down\">▼ -${Math.abs(diff)}</span>`;
           }
         }
 
@@ -234,8 +227,7 @@
       });
 
       if (players.length === 0) {
-        container.innerHTML =
-          "<div style='color:#888;'>No players match filter</div>";
+        container.innerHTML = "<div style='color:#888;'>No players match filter</div>";
       }
     }
   </script>
