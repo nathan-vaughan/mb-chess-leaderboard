@@ -55,5 +55,5 @@
   {"name":"Pottinger, Carl","city":"Winnipeg","rating":1834},
   {"name":"Evans, Jason","city":"Winnipeg","rating":1828},
   {"name":"Moeez, Abdul","city":"Winnipeg","rating":1815},
-  {"name": "Dhillon, Iqvinder Singh", "city":Winnipeg,"rating":1936, "previousRating":1928} 
+  {"name":"Dhillon, Iqvinder Singh","city":"Winnipeg","rating":1936, "previousRating":1928}
 ]
